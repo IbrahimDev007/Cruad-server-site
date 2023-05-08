@@ -24,9 +24,16 @@ async function run() {
 
         await client.connect();
 
+        app.get('/user', async (req, res) => {
+            const cursor = usersCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+
+        })
+
         app.post('/user', async (req, res) => {
             const user = req.body;
-            const results = usersCollection.insertOne(user)
+            const results = await usersCollection.insertOne(user)
             res.send(results)
             console.log('server', results);
         })
