@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const { ObjectId } = require('mongodb');
 const uri = "mongodb+srv://Ibrahim:123@ibrahim.a2p60n2.mongodb.net/?retryWrites=true&w=majority";
 const port = process.env.Port || 5000
 //this is my midleware
@@ -37,6 +38,15 @@ async function run() {
             res.send(results)
             console.log('server', results);
         })
+        app.delete('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await usersCollection.deleteOne(query);
+            res.send(result)
+
+        }
+        )
+
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
