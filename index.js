@@ -3,7 +3,8 @@ const cors = require('cors');
 const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { ObjectId } = require('mongodb');
-const uri = "mongodb+srv://Ibrahim:123@ibrahim.a2p60n2.mongodb.net/?retryWrites=true&w=majority";
+// const uri = "mongodb+srv://Ibrahim:123@ibrahim.a2p60n2.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb://0.0.0.0:27017";
 const port = process.env.Port || 5000
 //this is my midleware
 app.use(cors())
@@ -29,6 +30,34 @@ async function run() {
             const cursor = usersCollection.find();
             const result = await cursor.toArray();
             res.send(result);
+
+        })
+        app.get('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const user = await usersCollection.findOne(query);
+            console.log(user);
+            res.send(user)
+
+        })
+        app.put('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const option = { upsert: true }
+            const updateUser = {
+
+                $set: {
+                    name: user.name,
+                    email: user.email,
+                }
+
+
+            }
+
+            const result = await usersCollection.updateOne(filter, updateUser, option)
+
+            res.send(result)
 
         })
 
